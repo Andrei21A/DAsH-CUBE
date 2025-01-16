@@ -165,7 +165,7 @@ bool level_completed[NUM_LEVELS] = {false, false, false};
 int button_clicked_up = 0;
 int button_clicked_down = 0;
 int button_clicked_select = 0;
-int button_clicked_esc = 0;
+
 
 
 // Controls
@@ -353,8 +353,9 @@ void setup() {
   pinMode(BUTTON_UP_PIN, INPUT_PULLUP);
   pinMode(BUTTON_SELECT_PIN, INPUT_PULLUP);
   pinMode(BUTTON_DOWN_PIN, INPUT_PULLUP);
-	pinMode(BUTTON_ESC_PIN, INPUT_PULLUP);
+  pinMode(BUTTON_ESC_PIN, INPUT_PULLUP);
 
+  //checking if anything wrong happens
   if (!display.begin(SSD1306_SWITCHCAPVCC, 0x3C)) {
         for (;;);
     }
@@ -374,6 +375,7 @@ int selectl3 = 0;
 
 void loop() {
 
+  //Level selection
   if(selectl1 == 1 || selectl2 == 1 || selectl3 == 1)gameloop();
   else {
     if (digitalRead(BUTTON_UP_PIN) == LOW && button_clicked_up == 0) {
@@ -400,6 +402,7 @@ void loop() {
       button_clicked_down = 0;
     }
 
+    //Setting each level s place
     level_selected_prev = level_selected - 1;
     if (level_selected_prev < 0) {
       level_selected_prev = NUM_LEVELS - 1;
@@ -410,6 +413,7 @@ void loop() {
       level_selected_next = 0;
     }
 
+    //chosing the level
     if(digitalRead(BUTTON_SELECT_PIN) == LOW && level_selected == 0) {
       selectl1 = 1;
       spikes[0] = {130, 140, 135, 64, 64, 55};
@@ -441,9 +445,9 @@ void loop() {
       towers[0] = {190, 45, 10, 25};
       towers[1] = {170, 45, 10, 25};
       towers[2] = {190, 45, 10, 25};
-
     }
 
+    //the starting menu after it the level menu
     display.clearDisplay();
     if(start == false) 
     {
@@ -489,9 +493,8 @@ void loop() {
 }
 
 void gameloop() {
-
+    //exit button
 	if(digitalRead(BUTTON_ESC_PIN) == LOW) {
-        button_clicked_esc = 1;
         selectl1 = 0;
         selectl2 = 0;  
         selectl3 = 0;  
@@ -499,8 +502,7 @@ void gameloop() {
     }
 
 		
-  display.clearDisplay();
-
+    display.clearDisplay();
     display.setTextSize(1);
     display.setCursor(1, 1);
     display.print("ATTEMPT: ");
@@ -645,7 +647,7 @@ if (count_towers + 1 < 3) {
     }
 }
 
-
+//preparing the jump animation
 if (digitalRead(BUTTON_UP_PIN) == LOW && (jump == 0 && (ys >= 55 || onTop))) {
     jump = 1;
     jumpCounter = 0;
@@ -673,9 +675,8 @@ if (!onTop && jump == 0 && ys < 55) {
     ys += 1;
 }
 
-
-
-    if (spikes[count_spikes].x1 < -20 && towers[count_towers].x < -20) {
+//won game
+if (spikes[count_spikes].x1 < -20 && towers[count_towers].x < -20) {
         display.setTextSize(2);
         display.setCursor(20, 30);
         display.print("YOU WIN!");
